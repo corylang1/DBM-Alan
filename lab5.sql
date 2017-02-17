@@ -3,7 +3,7 @@ select a.city
 from agents a inner join orders o on a.aid = o.aid
 inner join customers c on o.cid = c.cid
 where c.cid = 'c006'
-;
+,
  
 -- 2 --
 select distinct p.pid
@@ -50,17 +50,17 @@ where c.city = a.city
 ;
  
 -- 7 --
-
-select city, name
+select name, city
 from customers
-where customers.city in ( 
-
-                        select c.city
-                        from customers c inner join products p on c.city = p.city
-                        group by p.city, 
-                             c.name, 
-                             c.city
+where city in (
+                select city
+                from ( select city,
+                        count (*)
+                        from products
+                        group by city
+                        order by count (*) ASC, city
                         limit 1
-                        )
+                        )sub2
+      			)
+group by city,name;
 
-;
